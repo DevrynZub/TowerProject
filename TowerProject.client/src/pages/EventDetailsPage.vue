@@ -14,11 +14,11 @@
             <p>Event Capacity: {{ event.capacity }}</p>
             {{ event.description }}
             <div class="d-flex pt-2">
-              <button v-if="!isAttendee" class="btn btn-secondary" @click="becomeAttendee()">Attending <i
+              <button v-if="!isAttendee" class="btn btn-success" @click="becomeAttendee()">Attending <i
                   class="mdi mdi-ticket"></i></button>
-              <button v-else class="btn btn-secondary" @click="removeAttendee()">Not Attending <i
+              <button v-else class="btn btn-success" @click="removeAttendee()">Not Attending <i
                   class="mdi mdi-cancel"></i></button>
-              <div class="rounded bg-info light-shadow p-2">
+              <div class=" p-2">
                 <h2>Attending: {{ event.ticketCount }}</h2>
               </div>
             </div>
