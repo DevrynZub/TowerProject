@@ -24,7 +24,6 @@ const routes = [
     beforeEnter: authSettled
   },
 
-
   {
     path: '/account',
     name: 'Account',

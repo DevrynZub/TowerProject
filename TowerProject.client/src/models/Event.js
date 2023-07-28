@@ -9,11 +9,10 @@ export class Event {
     this.coverImg = data.coverImg
     this.location = data.location
     this.capacity = data.capacity
-    this.startDate = data.startDate
+    this.startDate = data.startDate ? new Date(data.startDate) : null;
     this.isCanceled = true
     this.type = data.type
     this.creatorId = data.creatorId
-    this.category - data.category
     this.ticketCount = data.ticketCount
   }
 

@@ -1,10 +1,15 @@
 <template>
   <div class="card text center rounded elevation">
-    <p class="text-center">{{ event.name }}</p>
-    <router-link :to="{ name: 'Event', params: { eventId: event.creatorId } }">
+
+    <router-link :to="{ name: 'Event', params: { eventId: event.id } }">
       <img :src="event.coverImg" :alt="event.name" class="img-fluid">
-      <i><span>{{ event.ticketCount }}</span></i>
     </router-link>
+    <p class="text-center">{{ event.name }}</p>
+    <p class="text-center">{{ event.location }}</p>
+    <p class="text-center">{{ event.startDate.toDateString(2) }}</p>
+    <p class="text-center">Tickets: {{ event.ticketCount }}</p>
+    <p class="text-center">{{ event.type }}</p>
+
   </div>
 </template>
 

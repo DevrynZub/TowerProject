@@ -37,7 +37,7 @@
         placeholder="When is this event?">
     </div>
     <div class="mb-2">
-      <label for="cancelled" class="form-label">Cancelled?</label>
+      <label for="cancelled" class="form-label m-2">Cancelled?</label>
       <input v-model="editable.cancelled" required type="checkbox" id="cancelled" placeholder="Is this event still on?">
     </div>
     <div class="text-end">
@@ -71,7 +71,7 @@ export default {
           const event = await towerEventsService.createEvent(eventData)
           editable.value = {}
           Modal.getOrCreateInstance('#exampleModal').hide()
-          router.push({ name: 'Event', params: { eventId: event.creatorId } })
+          router.push({ name: 'Event', params: { eventId: event.event.id } })
         } catch (error) {
           Pop.error(error.message)
         }

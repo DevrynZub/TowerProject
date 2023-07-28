@@ -8,7 +8,7 @@ class TestHandler extends SocketHandler {
       .on('IS_TESTED', this.onTest)
   }
 
-  onTest(payload){
+  onTest(payload) {
     console.log('Recieved IS_TESTED', payload)
   }
 

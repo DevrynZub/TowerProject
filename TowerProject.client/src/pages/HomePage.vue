@@ -3,14 +3,27 @@
     <div class="row">
       <div class=" card col-12 tower-img text-light text-center">
         <h1>TOWER</h1>
-
       </div>
     </div>
-    <div>
-      <div class="row">
-        <div class=" col-md-3 col-12 p-4 " v-for="event in events" :key="event.id">
-          <EventCard :event="event" />
+  </div>
+  <div>
+    <div class="container p-2">
+      <div class="row justify-content-center">
+        <div class="col-md-8">
+          <div class="bg-dark d-flex justify-content-around p-3 rounded">
+            <button class="btn btn-outline-light" @click="filterBy = ''">All</button>
+            <button class="btn btn-outline-light" @click="filterBy = 'concert'">Concert</button>
+            <button class="btn btn-outline-light" @click="filterBy = 'sport'">Sports</button>
+            <button class="btn btn-outline-light" @click="filterBy = 'digital'">Digital</button>
+            <button class="btn btn-outline-light" @click="filterBy = 'convention'">Conventions</button>
+            <button class="btn btn-outline-light" @click="filterBy = 'misc'">Misc.</button>
+          </div>
         </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class=" col-md-3 col-12 p-4 " v-for="event in events" :key="event.id">
+        <EventCard :event="event" />
       </div>
     </div>
   </div>
@@ -45,7 +58,7 @@ export default {
         if (filterBy.value == "") {
           return AppState.events
         } else {
-          return AppState.events.filter(event => event.category == filterBy.value)
+          return AppState.events.filter(event => event.type == filterBy.value)
         }
       })
     };
