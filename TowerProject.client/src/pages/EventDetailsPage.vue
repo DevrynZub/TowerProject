@@ -1,9 +1,6 @@
 <template>
   <div class="container-fluid">
     <div class="row">
-
-      <!-- SECTION Events -->
-
       <div v-if="event" class="card col-md-12 p-5">
         <p>Event Date: {{ event.startDate.toDateString(2) }}, {{ event.startDate.toLocaleTimeString(2) }}</p>
         <p>{{ event.location }}</p>
@@ -22,21 +19,11 @@
               <button v-else class="btn btn-secondary" @click="removeAttendee()">Not Attending <i
                   class="mdi mdi-cancel"></i></button>
               <div class="rounded bg-info light-shadow p-2">
-                <h2>{{ event.ticketCount }}</h2>
+                <h2>Attending: {{ event.ticketCount }}</h2>
               </div>
             </div>
           </div>
         </div>
-        <!-- SECTION Event Pictures -->
-        <div class="col-md-9">
-          <div class="row">
-            <!-- <div class="col-3 p-2" v-for="comment in comments">
-              <img class="album-picture" :src="" alt="">
-            </div> -->
-          </div>
-        </div>
-
-
       </div>
     </div>
   </div>
@@ -51,81 +38,85 @@ import { logger } from '../utils/Logger.js';
 import { computed, watchEffect } from 'vue';
 import { AppState } from '../AppState.js';
 import { attendeesService } from '../services/AttendeesService.js';
+import { commentService } from '../services/CommentService.js';
+
+
+
 
 export default {
   setup() {
-    const route = useRoute()
-
+    const route = useRoute();
     async function getEventsById(eventId) {
       try {
         // const eventId = route.params.eventId
-        await towerEventsService.getEventsById(eventId)
-      } catch (error) {
-        logger.log(error)
-        Pop.error(error.message)
+        await towerEventsService.getEventsById(eventId);
+      }
+      catch (error) {
+        logger.log(error);
+        Pop.error(error.message);
       }
     }
-
     async function getAttendeeEventsByEventId() {
       try {
-        const eventId = route.params.eventId
-        await attendeesService.getAttendeeEventsByEventId(eventId)
-      } catch (error) {
-        logger.error(error)
-        Pop.toast(error.message, 'error')
+        const eventId = route.params.eventId;
+        await attendeesService.getAttendeeEventsByEventId(eventId);
+      }
+      catch (error) {
+        logger.error(error);
+        Pop.toast(error.message, 'error');
       }
     }
-
-
-
-
-
-
-
-
-
+    async function getCommentsByEventId() {
+      try {
+        const eventId = route.params.eventId;
+        await commentService.getCommentsByEventId(eventId);
+      }
+      catch (error) {
+        logger.log(error);
+        Pop.toast(error.message, 'error');
+      }
+    }
     watchEffect(() => {
       getEventsById(route.params.eventId),
-        getAttendeeEventsByEventId()
-    })
-
-
-
+        getAttendeeEventsByEventId(),
+        getCommentsByEventId();
+    });
     return {
       event: computed(() => AppState.activeEvent),
       account: computed(() => AppState.account),
       attendees: computed(() => AppState.eventTickets),
       isAttendee: computed(() => {
-        return AppState.eventAttendees.find(attendee => attendee.accountId == AppState.account.id)
+        return AppState.eventAttendees.find(attendee => attendee.accountId == AppState.account.id);
       }),
-
       async becomeAttendee() {
         try {
-          logger.log('become attendee')
-          const activeEventId = route.params.eventId
-          const attendeeData = { eventId: activeEventId }
-          await attendeesService.becomeAttendee(attendeeData)
+          logger.log('become attendee');
+          const activeEventId = route.params.eventId;
+          const attendeeData = { eventId: activeEventId };
+          await attendeesService.becomeAttendee(attendeeData);
           // NOTE PLEASE INCREASE :D
-          AppState.activeEvent.ticketCount++
-        } catch (error) {
-          logger.error(error)
-          Pop.toast(error.message, 'error')
+          AppState.activeEvent.ticketCount++;
+        }
+        catch (error) {
+          logger.error(error);
+          Pop.toast(error.message, 'error');
         }
       },
-
       async removeAttendee() {
         try {
-          const attendeeToRemove = AppState.eventAttendees.find(attendee => attendee.accountId == AppState.account.id)
-          const attendeeId = attendeeToRemove.id
-          await attendeesService.removeAttendee(attendeeId)
-          AppState.activeEvent.ticketCount--
-        } catch (error) {
-          logger.error(error)
-          Pop.toast(error.message, 'error')
+          const attendeeToRemove = AppState.eventAttendees.find(attendee => attendee.accountId == AppState.account.id);
+          const attendeeId = attendeeToRemove.id;
+          await attendeesService.removeAttendee(attendeeId);
+          AppState.activeEvent.ticketCount--;
+        }
+        catch (error) {
+          logger.error(error);
+          Pop.toast(error.message, 'error');
         }
       }
-    }
-  }
+    };
+  },
+
 }
 </script>
 

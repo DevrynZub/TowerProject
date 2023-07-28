@@ -17,8 +17,9 @@ class TowerEventsService {
 
   async createEvent(eventData) {
     const res = await api.post('api/events', eventData)
-    logger.log(res.data)
+    logger.log('[CREATED EVENT]', res.data)
     const event = new Event(res.data)
+    AppState.events.push(event)
     return event
   }
 

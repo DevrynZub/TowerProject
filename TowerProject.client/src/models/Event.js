@@ -10,7 +10,7 @@ export class Event {
     this.location = data.location
     this.capacity = data.capacity
     this.startDate = data.startDate ? new Date(data.startDate) : null;
-    this.isCanceled = true
+    this.isCanceled = data.isCanceled
     this.type = data.type
     this.creatorId = data.creatorId
     this.ticketCount = data.ticketCount

@@ -17,13 +17,14 @@
       <option value="3">Convention</option>
       <option value="3">Misc</option>
     </select>
-    <div class="form-floating mb-2">
-      <textarea class="form-control" placeholder="Leave a Description here" id="floatingTextarea"></textarea>
-      <label for="floatingTextarea">Description</label>
+    <div class="mb-2">
+      <label for="description" class="form-label">Description</label>
+      <textarea v-model="editable.description" required class="form-control form-control-lg" id="description"
+        placeholder="Leave a Description here"></textarea>
     </div>
     <div class="mb-2">
       <label for="type" class="form-label">Location</label>
-      <input v-model="editable.location" required type="text" class="form-control" id="location"
+      <input v-model="editable.location" required type="text" class="form-control width=" id="location"
         placeholder="Event Location">
     </div>
     <div class="mb-2">
@@ -33,17 +34,15 @@
     </div>
     <div class="mb-2">
       <label for="type" class="form-label">Date of Event:</label>
-      <input v-model="editable.startDate" required type="text" class="form-control" id="startDate"
-        placeholder="When is this event?">
+      <input v-model="startDate" type="date" class="form-control">
     </div>
     <div class="mb-2">
       <label for="cancelled" class="form-label m-2">Cancelled?</label>
-      <input v-model="editable.cancelled" required type="checkbox" id="cancelled" placeholder="Is this event still on?">
+      <input v-model="editable.cancelled" type="checkbox" id="cancelled">
     </div>
-    <div class="text-end">
-      <button class="btn btn-success" type="submit">Submit</button>
+    <div>
+      <button class="btn btn-success" @click="submitEventForm">Submit</button>
     </div>
-
   </form>
 </template>
 
@@ -59,10 +58,14 @@ export default {
   setup() {
     const editable = ref({})
     const router = useRouter()
+    const startDate = ref(null);
+
+
 
     return {
       editable,
-      types: ['concert', 'sport', 'digital', 'convention', 'misc'],
+      type: ['concert', 'sport', 'digital', 'convention', 'misc'],
+      startDate,
 
 
       async createEvent() {
@@ -70,8 +73,8 @@ export default {
           const eventData = editable.value
           const event = await towerEventsService.createEvent(eventData)
           editable.value = {}
-          Modal.getOrCreateInstance('#exampleModal').hide()
-          router.push({ name: 'Event', params: { eventId: event.event.id } })
+          Modal.getOrCreateInstance('#createEventModal').hide()
+          router.push({ name: 'Event', params: { eventId: event.id } })
         } catch (error) {
           Pop.error(error.message)
         }
