@@ -1,5 +1,5 @@
 <template>
-  <nav class="navbar navbar-expand-lg navbar-dark bg-dark px-3">
+  <nav class="navbar navbar-expand-lg px-3">
     <router-link class="navbar-brand d-flex" :to="{ name: 'Home' }">
       <div class="d-flex flex-column align-items-center">
         <img alt="logo" src="../assets/img/cw-logo.png" height="45" />
@@ -11,15 +11,22 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarText">
       <ul class="navbar-nav me-auto">
-        <li>
+        <!-- <li>
           <router-link :to="{ name: 'About' }" class="btn text-success lighten-30 selectable text-uppercase">
             About
           </router-link>
+        </li> -->
+        <li>
+          <button v-if="'account.id'" class="btn btn-danger" type="button" data-bs-toggle="modal"
+            data-bs-target="#createEventModal">
+            <i>Create Event</i>
+          </button>
         </li>
       </ul>
       <!-- LOGIN COMPONENT HERE -->
       <Login />
     </div>
+
   </nav>
 </template>
 
@@ -51,6 +58,10 @@ a:hover {
 @media screen and (min-width: 768px) {
   nav {
     height: 64px;
+    background-color: rgb(82, 81, 81);
   }
+
+
+
 }
 </style>

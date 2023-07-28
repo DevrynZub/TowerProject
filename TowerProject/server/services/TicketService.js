@@ -35,7 +35,7 @@ class TicketService {
     const ticketsToBeDeleted = await dbContext.Tickets.findById(ticketId)
 
     if (!ticketsToBeDeleted) {
-      throw new BadRequest('The ticket with this Id ${ticketId} does not exist')
+      throw new BadRequest(`The ticket with this Id ${ticketId} does not exist`)
     }
     if (ticketsToBeDeleted.accountId != userId) {
       throw new Forbidden('This ticket does not belong to you, you cant delete it. ')
