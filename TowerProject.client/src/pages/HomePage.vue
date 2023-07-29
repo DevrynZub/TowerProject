@@ -21,8 +21,9 @@
         </div>
       </div>
     </div>
+    <!-- Note FIX ROW HERE TO GET RID OF HORIZONTAL -->
     <div class="row">
-      <div class=" col-md-3 col-12 p-4 " v-for="event in events" :key="event.id">
+      <div class="col-md-3 col-12 p-4 " v-for="event in events" :key="event.id">
         <EventCard :event="event" />
       </div>
     </div>

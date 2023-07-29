@@ -34,7 +34,7 @@
     </div>
     <div class="mb-2">
       <label for="type" class="form-label">Date of Event:</label>
-      <input v-model="startDate" type="date" class="form-control">
+      <input v-model="editable.startDate" type="date" class="form-control">
     </div>
     <div class="mb-2">
       <label for="cancelled" class="form-label m-2">Cancelled?</label>

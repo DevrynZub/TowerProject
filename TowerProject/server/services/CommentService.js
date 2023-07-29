@@ -12,12 +12,12 @@ class CommentService {
       throw new Forbidden(`${event.name} has been cancelled. You can't add comments to this event.`)
     }
     const comment = await dbContext.Comments.create(commentData)
-    await comment.populate('creator')
+    await comment.populate('creator body')
     return comment
   }
 
   async getCommentsByEventsId(eventId) {
-    const comments = await dbContext.Comments.find({ eventId }).populate('creator')
+    const comments = await dbContext.Comments.find({ eventId }).populate('creator body')
     return comments
   }
 
@@ -28,7 +28,7 @@ class CommentService {
     if (!commentsToBeDeleted) {
       throw new BadRequest(`This comment with the ID of ${commentId} does not exist`)
     }
-    if (commentsToBeDeleted.creatorId != userId) {
+    if (commentsToBeDeleted.creatorId.toString() != userId) {
       throw new Forbidden('This comment is not yours, you cant delete it')
     }
     await commentsToBeDeleted.remove()

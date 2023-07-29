@@ -12,7 +12,7 @@ class CommentService {
   }
 
   async createComment(formData) {
-    const res = await api.post(`api/comments`, formData)
+    const res = await api.post('api/comments', formData)
     logger.log('[CREATING COMMENT]', res.data)
     const newComment = new Comment(res.data)
     AppState.comments.unshift(newComment)
