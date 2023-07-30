@@ -23,7 +23,8 @@ class AttendeesService {
     try {
       const res = await api.get('account/tickets')
       logger.log('[GET MY TICKETS]', res.data)
-      AppState.myTickets = res.data.map(d => new Attendee(d))
+      logger.log('[CHECKING MY TICKET DATA API]', res.data); AppState.myTickets = res.data.map(d => new Attendee(d))
+      logger.log('[appstate tickets]', AppState.myTickets)
     } catch (error) {
       logger.error(error)
       Pop.toast(error.message, 'error')

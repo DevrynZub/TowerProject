@@ -16,30 +16,25 @@
             <h4>Event Capacity: {{ event.capacity }}</h4>
             {{ event.description }}
 
-            <div v-if="event.capacity > 0">
-              <div class="d-flex pt-2">
-                <!-- Attending/Not Attending buttons -->
-                <button v-if="!isAttendee" class="btn btn-success" @click="becomeAttendee()">Buy Ticket</button>
-                <button v-else class="btn btn-success" @click="removeAttendee()">Return Ticket</button>
-              </div>
-            </div>
-            <div v-else>
-              <!-- Sold out image -->
-              <img src="/path/to/sold-out-image.png" alt="Sold Out" class="sold-out-image">
+
+            <div class="d-flex pt-2">
+              <!-- Attending/Not Attending buttons -->
+              <button v-if="!isAttendee" class="btn btn-success" @click="becomeAttendee()">Buy Ticket</button>
+              <button v-else class="btn btn-success" @click="removeAttendee()">Return Ticket</button>
             </div>
           </div>
         </div>
       </div>
     </div>
+  </div>
 
-    <!-- NOTE THIS is a great reference for me when I am lost on pulling things to the page. -->
-    <div class="card card-attendee m-2">
-      <h1 class="text-center mb-2">Attendees</h1>
-      <div class="d-flex mb-3 justify-content-center">
-        <div v-for="attendee in attendees" :key="attendee.id" class="d-flex flex-column align-items-center">
-          <p>{{ attendee.profile.name }}</p>
-          <img class="rounded-circle b-none attendee-img" :src="attendee.profile.picture" alt="">
-        </div>
+  <!-- NOTE THIS is a great reference for me when I am lost on pulling things to the page. -->
+  <div class="card card-attendee m-2">
+    <h1 class="text-center mb-2">Attendees</h1>
+    <div class="d-flex mb-3 justify-content-center">
+      <div v-for="attendee in attendees" :key="attendee.id" class="d-flex flex-column align-items-center">
+        <p>{{ attendee.profile.name }}</p>
+        <img class="rounded-circle b-none attendee-img" :src="attendee.profile.picture" alt="">
       </div>
     </div>
   </div>
@@ -198,6 +193,12 @@ export default {
 
 
 <style lang = "scss" scoped >
+.sold-out-image {
+  width: 100px;
+  height: 100px;
+  // opacity: 0.5;
+}
+
 .delete-button {
   background: transparent;
   border: none;

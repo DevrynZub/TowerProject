@@ -8,5 +8,7 @@ export class Attendee {
     this.profile = data.profile
     this.event = data.event
     this.accountId = data.accountId
+    this.eventId = data.eventId
+
   }
 }
