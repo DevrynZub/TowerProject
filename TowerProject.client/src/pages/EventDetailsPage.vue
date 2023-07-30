@@ -1,24 +1,31 @@
 <template>
   <div class="container-fluid">
     <div class="row">
-      <div v-if="event" class="card col-md-12 p-5">
+      <div v-if="event" class="card-event col-md-12 p-5">
         <p>Event Date: {{ event.startDate.toDateString(2) }}, {{ event.startDate.toLocaleTimeString(2) }}</p>
         <p>{{ event.location }}</p>
-        <p>Event Cancelled: {{ event.isCanceled }}</p>
+        <p v-if="event.isCanceled">Event Cancelled</p>
         <div class="d-flex justify-content-between align-items-center">
-          <img :src="event.coverImg" :alt="event.name" class="rounded img-class">
+          <img
+            :src="event.isCanceled ? 'https://tarentumboro.com/wp-content/uploads/2020/07/event-canceled.jpg' : event.coverImg"
+            :alt="event.name" class="rounded img-class">
 
           <div class="card-description p-2">
-            <p> {{ event.name }}, {{ event.type }} event</p>
-            <p>Ticket Count: {{ event.ticketCount }}</p>
-            <p>Event Capacity: {{ event.capacity }}</p>
+            <h1> {{ event.name }}, {{ event.type }} event</h1>
+            <h3>Ticket Count: {{ event.ticketCount }}</h3>
+            <h4>Event Capacity: {{ event.capacity }}</h4>
             {{ event.description }}
-            <div class="d-flex pt-2">
-              <button v-if="!isAttendee" class="btn btn-success" @click="becomeAttendee()">Attending</button>
-              <button v-else class="btn btn-success" @click="removeAttendee()">Not Attendings</button>
-              <div class=" p-2">
-                <h2>Attending: {{ event.ticketCount }}</h2>
+
+            <div v-if="event.capacity > 0">
+              <div class="d-flex pt-2">
+                <!-- Attending/Not Attending buttons -->
+                <button v-if="!isAttendee" class="btn btn-success" @click="becomeAttendee()">Buy Ticket</button>
+                <button v-else class="btn btn-success" @click="removeAttendee()">Return Ticket</button>
               </div>
+            </div>
+            <div v-else>
+              <!-- Sold out image -->
+              <img src="/path/to/sold-out-image.png" alt="Sold Out" class="sold-out-image">
             </div>
           </div>
         </div>
@@ -29,22 +36,32 @@
     <div class="card card-attendee m-2">
       <h1 class="text-center mb-2">Attendees</h1>
       <div class="d-flex mb-3 justify-content-center">
-        <div v-for="attendee in attendees" :key="attendee.id">
+        <div v-for="attendee in attendees" :key="attendee.id" class="d-flex flex-column align-items-center">
+          <p>{{ attendee.profile.name }}</p>
           <img class="rounded-circle b-none attendee-img" :src="attendee.profile.picture" alt="">
         </div>
       </div>
     </div>
   </div>
   <div class="d-flex justify-content-center">
-    <div class="col-8 ">
+    <div class="col-8 mb-2 ">
       <form @submit.prevent="createComment()">
         <label for="comment" class="form-label">Comment</label>
-        <input v-model="editable.body" required type="text" class="form-control" id="body" placeholder="Leave a comment"
-          style="height: 100px" maxlength="75" minlength="3">
-        <button type="submit" @click="submitEventForm">
-          Submit
-        </button>
+        <input v-model="editable.body" required type="text" class="form-control mb-3" id="body"
+          placeholder="Leave a comment" style="height: 100px" maxlength="75" minlength="3">
+        <button v-if="event && !event.isCanceled" class="mb-3" type="submit" @click="submitEventForm">Submit</button>
       </form>
+
+      <div class="card p-2">
+        <div v-for="comment in comments" :key="comment.id"
+          class="  card-comments p-2 d-flex mb-3 justify-content-between">
+          <!-- <img :src="comment.creator.picture"> -->
+          <div>{{ comment.body }}
+            <button class="mdi mdi-delete-alert-outline delete-button" @click="deleteComment(comment.id)"
+              :disabled="!account"></button>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -66,7 +83,7 @@ import { commentService } from '../services/CommentService.js';
 export default {
   setup() {
     const route = useRoute();
-    const editable = ref({})
+    const editable = ref({});
 
 
 
@@ -107,6 +124,7 @@ export default {
         getAttendeeEventsByEventId(),
         getCommentsByEventId();
     });
+
     return {
       editable,
       comments: computed(() => AppState.comments),
@@ -114,10 +132,10 @@ export default {
       account: computed(() => AppState.account),
       attendees: computed(() => AppState.eventAttendees),
       isAttendee: computed(() => {
-        return AppState.eventAttendees.find(attendee => attendee.accountId == AppState.account.id);
-
-
+        return AppState.eventAttendees.find(attendee => attendee.accountId === AppState.account?.id);
       }),
+
+
 
       async createComment() {
         try {
@@ -133,6 +151,18 @@ export default {
         }
       },
 
+      async deleteComment(commentId) {
+        try {
+          await commentService.deleteComment(commentId);
+          AppState.comments = AppState.comments.filter((comment) => comment.id !== commentId);
+        } catch (error) {
+          logger.error(error);
+          Pop.toast(error.message, 'error');
+        }
+      },
+
+
+
       async becomeAttendee() {
         try {
           logger.log('become attendee');
@@ -141,8 +171,8 @@ export default {
           await attendeesService.becomeAttendee(attendeeData);
           // NOTE PLEASE INCREASE :D
           AppState.activeEvent.ticketCount++;
-        }
-        catch (error) {
+          AppState.activeEvent.capacity--;
+        } catch (error) {
           logger.error(error);
           Pop.toast(error.message, 'error');
         }
@@ -153,8 +183,8 @@ export default {
           const attendeeId = attendeeToRemove.id;
           await attendeesService.removeAttendee(attendeeId);
           AppState.activeEvent.ticketCount--;
-        }
-        catch (error) {
+          AppState.activeEvent.capacity++;
+        } catch (error) {
           logger.error(error);
           Pop.toast(error.message, 'error');
         }
@@ -168,7 +198,31 @@ export default {
 
 
 <style lang = "scss" scoped >
+.delete-button {
+  background: transparent;
+  border: none;
+  color: red;
+  cursor: pointer;
+}
+
 .card {
+  border-radius: 16px;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(6.9px);
+  -webkit-backdrop-filter: blur(6.9px);
+  border: 1px solid rgba(123, 106, 106, 1);
+}
+
+.card-comments {
+  background: rgba(115, 87, 204, 0.53);
+  border-radius: 16px;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(6.9px);
+  -webkit-backdrop-filter: blur(6.9px);
+  border: 1px solid rgba(123, 106, 106, 1);
+}
+
+.card-event {
   background: rgba(115, 87, 204, 0.53);
   border-radius: 16px;
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
@@ -209,5 +263,11 @@ export default {
   border-radius: 5px;
   box-shadow: 2px 2px white;
 
+}
+
+
+.disabled-button {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 </style>
