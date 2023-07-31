@@ -9,8 +9,8 @@
   <div>
     <div class="container p-2">
       <div class="row justify-content-center">
-        <div class="col-md-8">
-          <div class="bg-dark d-flex justify-content-around p-3 rounded">
+        <div class="col-12 col-md-8">
+          <div class="bg-dark d-flex flex-warp justify-content-around p-3 rounded filter-buttons">
             <button class="btn btn-outline-light" @click="filterBy = ''">All</button>
             <button class="btn btn-outline-light" @click="filterBy = 'concert'">Concert</button>
             <button class="btn btn-outline-light" @click="filterBy = 'sport'">Sports</button>
@@ -81,7 +81,18 @@ export default {
 
 .events-background {
   background-color: rgb(82, 81, 81);
+}
 
 
+@media (max-width: 767px) {
+  .filter-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .filter-buttons button {
+    margin: 5px;
+  }
 }
 </style>

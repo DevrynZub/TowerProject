@@ -4,7 +4,7 @@
     <h1 class="text-center fs-bold"></h1>
     <div class="container-fluid mt-5">
       <div class="row">
-        <div class="col-4" v-for="ticket in myTickets" :key="ticket.id">
+        <div class="col-12 col-md-4" v-for="ticket in myTickets" :key="ticket.id">
           <div class="card mb-3">
             <div class="card-header">{{ ticket.event.name }}</div>
             <img :src="ticket.event.coverImg" class="card-img-top img-fluid elevation rounded"

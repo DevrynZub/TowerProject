@@ -1,65 +1,68 @@
 <template>
-  <div class="container-fluid details-page">
-    <div class="row">
-      <div v-if="event" class="card-event col-md-12 p-5">
-        <p>Event Date: {{ event.startDate.toDateString(2) }}, {{ event.startDate.toLocaleTimeString(2) }}</p>
-        <p>{{ event.location }}</p>
-        <p v-if="event.isCanceled">Event Cancelled</p>
-        <div class="d-flex justify-content-between align-items-center">
-          <img v-if="remainingTickets === 0 && !event.isCanceled"
-            src="https://th.bing.com/th/id/OIP.YxmolNlivbjTKrdUGOyszgHaF9?pid=ImgDet&rs=1" alt="Sold Out"
-            class="rounded img-class" />
-          <img v-else-if="!event.isCanceled" :src="event.coverImg" :alt="event.name" class="rounded img-class" />
-          <img v-else src="https://tarentumboro.com/wp-content/uploads/2020/07/event-canceled.jpg" alt="Event Cancelled"
-            class="rounded img-class" />
-
-          <div class="card-description p-2">
-            <h1> {{ event.name }}, {{ event.type }} event</h1>
-            <h3>Ticket Count: {{ event.ticketCount }}</h3>
-            <h4>Remaining Tickets: {{ remainingTickets }}</h4>
-            {{ event.description }}
+  <div>
+    <div class="container-fluid details-page">
+      <div class="row mb-2">
+        <div v-if="event" class="card-event text-center col-12 col-md-12 p-3 p-md-5">
+          <p>Event Date: {{ event.startDate.toDateString(2) }}, {{ event.startDate.toLocaleTimeString(2) }}</p>
+          <p>{{ event.location }}</p>
+          <p v-if="event.isCanceled">Event Cancelled</p>
+          <div class="d-flex flex-wrap justify-content-center align-items-center">
+            <img v-if="remainingTickets === 0 && !event.isCanceled"
+              src="https://th.bing.com/th/id/OIP.YxmolNlivbjTKrdUGOyszgHaF9?pid=ImgDet&rs=1" alt="Sold Out"
+              class="rounded img-class" />
+            <img v-else-if="!event.isCanceled" :src="event.coverImg" :alt="event.name" class="rounded img-class" />
+            <img v-else src="https://tarentumboro.com/wp-content/uploads/2020/07/event-canceled.jpg" alt="Event Cancelled"
+              class="rounded img-class mb-2" />
 
 
-            <div class="d-flex pt-2">
-              <button v-if="!isAttendee && !event.isCanceled && remainingTickets > 0" class="btn btn-success"
-                @click="becomeAttendee()">Buy Ticket</button>
-              <button v-else class="btn btn-success" :disabled="event.isCanceled || remainingTickets === 0"
-                @click="removeAttendee()">Return Ticket</button>
+            <div class="card-description p-2 mt-3 mt-md-0">
+              <h1> {{ event.name }}, {{ event.type }} event</h1>
+              <h3>Ticket Count: {{ event.ticketCount }}</h3>
+              <h4>Remaining Tickets: {{ remainingTickets }}</h4>
+              {{ event.description }}
+
+
+              <div class="d-flex pt-2">
+                <button v-if="!isAttendee && !event.isCanceled && remainingTickets > 0" class="btn btn-success"
+                  @click="becomeAttendee()">Buy Ticket</button>
+                <button v-else class="btn btn-success" :disabled="event.isCanceled || remainingTickets === 0"
+                  @click="removeAttendee()">Return Ticket</button>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <!-- NOTE THIS is a great reference for me when I am lost on pulling things to the page. -->
-  <div class="card card-attendee m-2">
-    <h1 class="text-center mb-2">Attendees</h1>
-    <div class="d-flex mb-3 justify-content-center">
-      <div v-for="attendee in attendees" :key="attendee.id" class="d-flex flex-column align-items-center">
-        <p>{{ attendee.profile.name }}</p>
-        <img class="rounded-circle b-none attendee-img" :src="attendee.profile.picture" alt="">
+    <!-- NOTE THIS is a great reference for me when I am lost on pulling things to the page. -->
+    <div class="card card-attendee m-2">
+      <h1 class="text-center mb-2">Attendees</h1>
+      <div class="d-flex mb-3 justify-content-center">
+        <div v-for="attendee in attendees" :key="attendee.id" class="d-flex flex-column align-items-center">
+          <p>{{ attendee.profile.name }}</p>
+          <img class="rounded-circle b-none attendee-img" :src="attendee.profile.picture" alt="">
 
+        </div>
       </div>
     </div>
-  </div>
-  <div class="d-flex justify-content-center">
-    <div class="col-8 mb-2 ">
-      <form @submit.prevent="createComment()">
-        <label for="comment" class="form-label">Comment</label>
-        <input v-model="editable.body" required type="text" class="form-control mb-3" id="body"
-          placeholder="Leave a comment" style="height: 100px" maxlength="75" minlength="3">
-        <button v-if="event && !event.isCanceled" class="mb-3" type="submit" @click="submitEventForm">Submit</button>
-      </form>
-      <div class="card p-2">
-        <div v-for="comment in comments" :key="comment.id" class="card-comments p-2 d-flex m-1 justify-content-between">
-          <div class="d-flex flex-column align-items-center">
-            <img class="rounded-circle b-none comment-img" :src="comment.creator.picture" alt="">
-            <p>{{ comment.creator.name }}</p>
+    <div class="d-flex justify-content-center">
+      <div class="col-12 col-md-8 mb-2 ">
+        <form @submit.prevent="createComment()">
+          <label for="comment" class="form-label">Comment</label>
+          <input v-model="editable.body" required type="text" class="form-control mb-3" id="body"
+            placeholder="Leave a comment" style="height: 100px" maxlength="75" minlength="3">
+          <button v-if="event && !event.isCanceled" class="mb-3" type="submit" @click="submitEventForm">Submit</button>
+        </form>
+        <div class="card p-2">
+          <div v-for="comment in comments" :key="comment.id" class="card-comments p-2 d-flex m-1 justify-content-between">
+            <div class="d-flex flex-column align-items-center">
+              <img class="rounded-circle b-none comment-img" :src="comment.creator.picture" alt="">
+              <p>{{ comment.creator.name }}</p>
+            </div>
+            <div class="d-flex text-center mt-4">{{ comment.body }}</div>
+            <button class="mdi mdi-delete-alert-outline delete-button" @click="deleteComment(comment.id)"
+              :disabled="!account"></button>
           </div>
-          <div class="d-flex text-center mt-4">{{ comment.body }}</div>
-          <button class="mdi mdi-delete-alert-outline delete-button" @click="deleteComment(comment.id)"
-            :disabled="!account"></button>
         </div>
       </div>
     </div>
@@ -290,5 +293,17 @@ export default {
 .disabled-button {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+
+
+@media (max-width: 767px) {
+  .card-description {
+    text-align: center;
+  }
+
+  .img-class {
+    width: 100%;
+  }
 }
 </style>
