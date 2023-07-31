@@ -28,28 +28,27 @@ class TowerEventService {
   async updateEvents(eventId, userId, eventData) {
     const originalEvent = await this.getEventsById(eventId)
 
-    if (originalEvent.creatorId.toString() != userId) {
+    if (originalEvent.creatorId.toString() !== userId) {
       throw new Forbidden(`You are not the creator of ${originalEvent.name}`)
     }
 
     // TODO check has the event already been canceled? 
-    if (originalEvent.isCanceled == true) {
+    if (originalEvent.isCanceled) {
       throw new Forbidden(`stop that`)
     }
 
+    // Update capacity if provided in eventData
+    if (eventData.capacity != null) {
+      originalEvent.capacity = eventData.capacity
+    }
 
-    // IF it hasn't been canceled be able to update all  this stuff
+    // Update other event fields as needed
     originalEvent.name = eventData.name || originalEvent.name
     originalEvent.description = eventData.description || originalEvent.description
 
-    // NOTE Did not need due to it needed to be called before to check it.
-
-    // originalEvent.isCanceled = eventData.isCanceled != null ? eventData.isCanceled : originalEvent.isCanceled
-
+    // Save the updated event
     let updatedEvent = await originalEvent.save()
-
     return updatedEvent
-
   }
 
   async archiveEvent(eventId, userId) {

@@ -1,5 +1,5 @@
 <template>
-  <div class="container-fluid">
+  <div class="container-fluid details-page">
     <div class="row">
       <div v-if="event" class="card-event col-md-12 p-5">
         <p>Event Date: {{ event.startDate.toDateString(2) }}, {{ event.startDate.toLocaleTimeString(2) }}</p>
@@ -47,14 +47,12 @@
         <button v-if="event && !event.isCanceled" class="mb-3" type="submit" @click="submitEventForm">Submit</button>
       </form>
       <div class="card p-2">
-        <div v-for="comment in comments" :key="comment.id" class="card-comments p-2 d-flex mb-3 justify-content-between">
-          <div class="d-flex align-items-center">
-            <img v-if="comment.creator" :src="comment.creator.picture" class="rounded-circle b-none attendee-img" alt="">
-            <div class="ml-2" v-if="comment.creator">
-              <p class="mb-0">{{ comment.creator.name }}</p>
-              <p class="mb-0">{{ comment.body }}</p>
-            </div>
+        <div v-for="comment in comments" :key="comment.id" class="card-comments p-2 d-flex m-1 justify-content-between">
+          <div class="d-flex flex-column align-items-center">
+            <img class="rounded-circle b-none comment-img" :src="comment.creator.picture" alt="">
+            <p>{{ comment.creator.name }}</p>
           </div>
+          <div class="d-flex text-center mt-4">{{ comment.body }}</div>
           <button class="mdi mdi-delete-alert-outline delete-button" @click="deleteComment(comment.id)"
             :disabled="!account"></button>
         </div>
@@ -168,7 +166,6 @@ export default {
           await attendeesService.becomeAttendee(attendeeData);
           // NOTE PLEASE INCREASE :D
           AppState.activeEvent.ticketCount++;
-          AppState.activeEvent.capacity--;
         } catch (error) {
           logger.error(error);
           Pop.toast(error.message, 'error');
@@ -180,7 +177,6 @@ export default {
           const attendeeId = attendeeToRemove.id;
           await attendeesService.removeAttendee(attendeeId);
           AppState.activeEvent.ticketCount--;
-          AppState.activeEvent.capacity++;
         } catch (error) {
           logger.error(error);
           Pop.toast(error.message, 'error');
@@ -195,6 +191,21 @@ export default {
 
 
 <style lang = "scss" scoped >
+.details-page {
+  background-image: url('https://images.unsplash.com/photo-1623079990309-6b8f80abba66?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1548&q=80');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  // min-height: 100vh;
+}
+
+.comment-img {
+  height: 50px;
+  width: 50px;
+  border-radius: 50%;
+  box-shadow: 2px 2px white;
+}
+
 .sold-out-image {
   width: 100px;
   height: 100px;
@@ -223,6 +234,8 @@ export default {
   backdrop-filter: blur(6.9px);
   -webkit-backdrop-filter: blur(6.9px);
   border: 1px solid rgba(123, 106, 106, 1);
+  margin: 0;
+  text-align: center;
 }
 
 .card-event {
