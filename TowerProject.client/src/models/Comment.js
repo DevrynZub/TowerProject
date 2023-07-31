@@ -9,6 +9,7 @@ export class Comment {
     this.IsAttending = data.IsAttending
     this.createdAt = data.createdAt
     this.updatedAt = data.updatedAt
+    this.creator = data.creator
   }
 }
 

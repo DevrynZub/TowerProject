@@ -46,15 +46,17 @@
           placeholder="Leave a comment" style="height: 100px" maxlength="75" minlength="3">
         <button v-if="event && !event.isCanceled" class="mb-3" type="submit" @click="submitEventForm">Submit</button>
       </form>
-
       <div class="card p-2">
-        <div v-for="comment in comments" :key="comment.id"
-          class="  card-comments p-2 d-flex mb-3 justify-content-between">
-          <!-- <img :src="comment.creator.picture"> -->
-          <div>{{ comment.body }}
-            <button class="mdi mdi-delete-alert-outline delete-button" @click="deleteComment(comment.id)"
-              :disabled="!account"></button>
+        <div v-for="comment in comments" :key="comment.id" class="card-comments p-2 d-flex mb-3 justify-content-between">
+          <div class="d-flex align-items-center">
+            <img v-if="comment.creator" :src="comment.creator.picture" class="rounded-circle b-none attendee-img" alt="">
+            <div class="ml-2" v-if="comment.creator">
+              <p class="mb-0">{{ comment.creator.name }}</p>
+              <p class="mb-0">{{ comment.body }}</p>
+            </div>
           </div>
+          <button class="mdi mdi-delete-alert-outline delete-button" @click="deleteComment(comment.id)"
+            :disabled="!account"></button>
         </div>
       </div>
     </div>
