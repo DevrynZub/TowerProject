@@ -10,7 +10,6 @@
             <img :src="ticket.event.coverImg" class="card-img-top img-fluid elevation rounded"
               :style="{ objectFit: 'cover', height: '200px' }" alt="Event Cover">
             <div class="card-body">
-              <!-- Add more event details as needed -->
             </div>
           </div>
         </div>
@@ -19,10 +18,7 @@
   </div>
 </template>
 
-<!-- <div class="about text-center">
-      <h1>Welcome {{ account.name }}</h1>
-      <img class="rounded" :src="account.picture" alt="" />
-      <p>{{ account.email }}</p> -->
+
 
 
 
