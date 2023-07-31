@@ -6,21 +6,24 @@
         <p>{{ event.location }}</p>
         <p v-if="event.isCanceled">Event Cancelled</p>
         <div class="d-flex justify-content-between align-items-center">
-          <img
-            :src="event.isCanceled ? 'https://tarentumboro.com/wp-content/uploads/2020/07/event-canceled.jpg' : event.coverImg"
-            :alt="event.name" class="rounded img-class">
+          <img v-if="remainingTickets === 0" :src="getSoldOutImage()" alt="Sold Out" class="rounded img-class" />
+          <img v-else-if="!event.isCanceled" :src="event.coverImg" :alt="event.name" class="rounded img-class" />
+          <img v-else src="https://tarentumboro.com/wp-content/uploads/2020/07/event-canceled.jpg" alt="Event Cancelled"
+            class="rounded img-class" />
 
           <div class="card-description p-2">
             <h1> {{ event.name }}, {{ event.type }} event</h1>
             <h3>Ticket Count: {{ event.ticketCount }}</h3>
-            <h4>Event Capacity: {{ event.capacity }}</h4>
+            <h4>Remaining Tickets: {{ remainingTickets }}</h4>
             {{ event.description }}
 
 
             <div class="d-flex pt-2">
               <!-- Attending/Not Attending buttons -->
-              <button v-if="!isAttendee" class="btn btn-success" @click="becomeAttendee()">Buy Ticket</button>
-              <button v-else class="btn btn-success" @click="removeAttendee()">Return Ticket</button>
+              <button v-if="!isAttendee && !event.isCanceled && remainingTickets > 0" class="btn btn-success"
+                @click="becomeAttendee()">Buy Ticket</button>
+              <button v-else class="btn btn-success" :disabled="event.isCanceled || remainingTickets === 0"
+                @click="removeAttendee()">Return Ticket</button>
             </div>
           </div>
         </div>
@@ -35,6 +38,7 @@
       <div v-for="attendee in attendees" :key="attendee.id" class="d-flex flex-column align-items-center">
         <p>{{ attendee.profile.name }}</p>
         <img class="rounded-circle b-none attendee-img" :src="attendee.profile.picture" alt="">
+
       </div>
     </div>
   </div>
@@ -123,12 +127,22 @@ export default {
     return {
       editable,
       comments: computed(() => AppState.comments),
+      remainingTickets: computed(() => AppState.activeEvent.capacity - AppState.activeEvent.ticketCount),
       event: computed(() => AppState.activeEvent),
       account: computed(() => AppState.account),
       attendees: computed(() => AppState.eventAttendees),
       isAttendee: computed(() => {
         return AppState.eventAttendees.find(attendee => attendee.accountId === AppState.account?.id);
       }),
+
+      canBuyTicket() {
+        return !this.isAttendee && !this.event.isCanceled && this.remainingTickets > 0;
+      },
+
+      getSoldOutImage() {
+        return 'https://th.bing.com/th/id/OIP.YxmolNlivbjTKrdUGOyszgHaF9?pid=ImgDet&rs=1';
+      },
+
 
 
 
