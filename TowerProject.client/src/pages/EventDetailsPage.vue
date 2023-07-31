@@ -21,7 +21,6 @@
 
 
             <div class="d-flex pt-2">
-              <!-- Attending/Not Attending buttons -->
               <button v-if="!isAttendee && !event.isCanceled && remainingTickets > 0" class="btn btn-success"
                 @click="becomeAttendee()">Buy Ticket</button>
               <button v-else class="btn btn-success" :disabled="event.isCanceled || remainingTickets === 0"
@@ -137,9 +136,6 @@ export default {
         return AppState.eventAttendees.find(attendee => attendee.accountId === AppState.account?.id);
       }),
 
-      canBuyTicket() {
-        return !this.isAttendee && !this.event.isCanceled && this.remainingTickets > 0;
-      },
 
 
 
