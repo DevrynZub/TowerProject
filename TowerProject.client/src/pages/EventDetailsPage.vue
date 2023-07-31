@@ -8,8 +8,8 @@
         <div class="d-flex justify-content-between align-items-center">
           <img v-if="remainingTickets === 0 && !event.isCanceled"
             src="https://th.bing.com/th/id/OIP.YxmolNlivbjTKrdUGOyszgHaF9?pid=ImgDet&rs=1" alt="Sold Out"
-            class="rounded img-class" /> <img v-else-if="!event.isCanceled" :src="event.coverImg" :alt="event.name"
             class="rounded img-class" />
+          <img v-else-if="!event.isCanceled" :src="event.coverImg" :alt="event.name" class="rounded img-class" />
           <img v-else src="https://tarentumboro.com/wp-content/uploads/2020/07/event-canceled.jpg" alt="Event Cancelled"
             class="rounded img-class" />
 
@@ -135,10 +135,6 @@ export default {
       isAttendee: computed(() => {
         return AppState.eventAttendees.find(attendee => attendee.accountId === AppState.account?.id);
       }),
-
-
-
-
 
 
       async createComment() {
